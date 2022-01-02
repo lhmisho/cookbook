@@ -22,6 +22,11 @@ class IngredientNode(DjangoObjectType):
         }
         interfaces = (graphene.relay.Node, )
 
+    extra_field = graphene.String()
+
+    def resolve_extra_field(self, info):
+        return "hello!"
+
 
 class CategoryType(DjangoObjectType):
     class Meta:
@@ -44,7 +49,7 @@ class Query(graphene.ObjectType):
 
     # all_ingredients = graphene.List(IngredientType)
     # category_by_name = graphene.Field(CategoryType, name=graphene.String(required=True))
-
+    #
     # def resolve_all_ingredients(root, info):
     #     # We can easily optimize query count in the resolve method
     #     return Ingredient.objects.select_related("category").all()
