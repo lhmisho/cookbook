@@ -31,7 +31,7 @@ class IngredientNode(DjangoObjectType):
 class CategoryType(DjangoObjectType):
     class Meta:
         model = Category
-        fields = ("id", "name", "ingredients")
+        # fields = ("id", "name", "ingredients")
 
 
 class IngredientType(DjangoObjectType):
@@ -76,6 +76,22 @@ class Query(graphene.ObjectType):
 
 
 #******************* 😎 PRODUCT-MUTATIONS 😎 *************************#
+class CreateCategory(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+
+    category = graphene.Field(CategoryType)
+
+    def mutate(self, info, name):
+        category = Category.objects.create(
+            name=name
+        )
+
+        return CreateCategory(category=category)
+
+
+
+#******************* 😎 PRODUCT-MUTATIONS 😎 *************************#
 class CreateProduct(graphene.Mutation):
     class Arguments:
         name = graphene.String()
@@ -112,6 +128,6 @@ class CreateProduct(graphene.Mutation):
 #***************** 🔥🔥🔥 Wiring up the mutations 🔥🔥🔥 *******************#
 class Mutation(graphene.ObjectType):
     create_product = CreateProduct.Field()
-
+    create_category = CreateCategory.Field()
 
 # schema = graphene.Schema(query=Query)

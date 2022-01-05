@@ -38,7 +38,8 @@ INSTALLED_APPS = [
 
     # third party apps
     "graphene_django",
-
+    "graphql_auth",
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     # local apps
     "ingredients",
 ]
@@ -52,7 +53,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 ROOT_URLCONF = 'cookbook.urls'
 
 TEMPLATES = [
@@ -122,8 +126,17 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+GRAPHENE = {
+    "SCHEMA": "cookbook.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+}
+from datetime import timedelta
 
-# cookbook/settings.py
-# GRAPHENE = {
-#     "SCHEMA": "cookbook.schema"
-# }
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+}
